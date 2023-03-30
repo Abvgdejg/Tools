@@ -1,11 +1,11 @@
 import requests
 from time import sleep
 import os
-from . import writeTools as WT
+from . import timeTools as TT
 import sys
 from threading import Thread 
 
-WT = WT.WriteTools()
+TT = TT.TimeTools()
 
 def Start(image_path, start_url = "0.0.0.0:8888", time=0):
 
@@ -15,7 +15,7 @@ def Start(image_path, start_url = "0.0.0.0:8888", time=0):
     headers = {'Accept': 'application/json'}
     response_one = requests.post(url, files=new_file, headers=headers)
 
-    send_time = WT.ChechTimer(time)
+    send_time = TT.ChechTimer(time)
 
     link_one = response_one.json()["result_link"]
     estime = float(response_one.json()["estime"].split("s")[0]) + 0.5
@@ -34,7 +34,7 @@ def Start(image_path, start_url = "0.0.0.0:8888", time=0):
 
     if status == "complete":
         number = requests.get(url, headers=headers).json()["number"]
-        return (number, send_time, float(WT.ChechTimer(time))-0.5)
+        return (number, send_time, float(TT.ChechTimer(time))-0.5)
     else: return "ERROR"        
     
     
@@ -55,7 +55,7 @@ def CheckTime(image_path, start_url = "0.0.0.0:8888", count:int=1):
         
 
         url = f"http://{start_url}{link_one}"
-        WT.StartTimer(f"await_{i}")
+        TT.StartTimer(f"await_{i}")
         lifetimes.append(10 + 1.4*(i+1))
         addresses.append(url)
 
@@ -71,7 +71,7 @@ def CheckTime(image_path, start_url = "0.0.0.0:8888", count:int=1):
 
                 sleep(1)
             except:
-                print(f"{i} Checker: {WT.ChechTimer(f'await_{i}')}/{lifetimes[i]}")
+                print(f"{i} Checker: {TT.ChechTimer(f'await_{i}')}/{lifetimes[i]}")
                 
                 
                 break
@@ -80,14 +80,14 @@ def CheckTime(image_path, start_url = "0.0.0.0:8888", count:int=1):
 
 
 def SpeedTest(count):
-    WT.StartTimer()
+    TT.StartTimer()
     for i in range(count):
-            print(f"Iterration time: {float(WT.ChechTimer())-0.5*i}")
-            WT.StartTimer(i)
+            print(f"Iterration time: {float(TT.ChechTimer())-0.5*i}")
+            TT.StartTimer(i)
             number,send, time = Start("./g.png", "192.168.21.63:8888", i)
-            print(f"{i+1}) " + number + f" Time: {float(WT.ChechTimer(i))-0.5}, Send: {send}, Complete: {time}")
+            print(f"{i+1}) " + number + f" Time: {float(TT.ChechTimer(i))-0.5}, Send: {send}, Complete: {time}")
            
-    t = float(WT.ChechTimer()) - (count * 0.5)
+    t = float(TT.ChechTimer()) - (count * 0.5)
     print(f"Total time: {t}")
     print(f"Time to one file: {t / count}")
 
